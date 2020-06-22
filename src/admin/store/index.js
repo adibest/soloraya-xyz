@@ -1,28 +1,36 @@
-import Vue from 'vue'
 import Vuex from 'vuex'
-import app from './modules/app'
+import VuexPersistence from 'vuex-persist'
 
-import * as getters from './getters'
-
-Vue.use(Vuex)
+import auth from './modules/auth'
+import users from './modules/users'
 
 const state = {
 	globalLoading: false,
+	needReload: false,
 }
 
 const mutations = {
 	toggleGlobalLoading(state, status) {
 		state.globalLoading = status
+	},
+	toggleNeedReload(state, status) {
+		state.needReload = status
 	}
 }
 
+const modules = {
+	auth, users
+}
+
+const vuexLocal = new VuexPersistence({
+  storage: window.localStorage
+})
+
 const store = new Vuex.Store({
-	state: {},
-	getters,
-	modules: {
-		app,
-	},
-	mutations: {},
+	state,
+	mutations,
+	modules,
+	plugins: [vuexLocal.plugin]
 })
 
 export default store

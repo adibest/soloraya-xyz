@@ -14,3 +14,15 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->post('/login', 'AuthController@postLogin');
+$router->post('/register', 'AuthController@postRegister');
+$router->group(['middleware' => ['auth:api', 'cors']], function ($router) {
+    $router->group(['prefix' => 'admin'], function () use ($router) {
+        $router->get('users/data', 'Admin\UserController@data');
+        $router->post('users/create', 'Admin\UserController@create');
+        $router->post('users/{id}/edit', 'Admin\UserController@edit');
+        $router->delete('users/{id}/delete', 'Admin\UserController@delete');
+    });
+    $router->post('logout', 'AuthController@postLogout');
+});
